@@ -1,6 +1,6 @@
 {
   "name": "redux-action-logging",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Redux testing utility middleware to log actions received by a store without mocking that store.",
   "main": "lib/index.js",
   "scripts": {
