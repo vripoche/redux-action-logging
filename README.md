@@ -30,6 +30,8 @@ store.dispatch({ type: BAR })
 store.dispatch({ type: BAZ, value: 10 })
 store.dispatch((dispatch, getState) => dispatch({type: QUX }))
 
+// With "has" (strict equality)
+
 // These return true:
 storeActions.has(FOO)
 storeActions.has(FOO, BAR)
@@ -38,7 +40,7 @@ storeActions.has({ type: BAZ, value: 10 })
 storeActions.has(QUX)
 storeActions.has(
   BAR,
-  { type: BAZ, value: 10}
+  { type: BAZ, value: 10 }
 )
 
 // These return false:
@@ -47,8 +49,21 @@ storeActions.has(FOO, XYZZY)
 storeActions.has({ type: BAZ, value: 5 })
 storeActions.has(
   BAR,
-  { type: BAZ, value: 5}
+  { type: BAZ, value: 5 }
 )
+
+// With "matches" (not strictly equal)
+
+// These return true:
+storeActions.matches({ type: BAZ })
+storeActions.matches(
+  BAR,
+  { value: 5 }
+)
+
+// These return false:
+storeActions.matches({ value: 15 })
+storeActions.matches({ type: BAZ, value: 5 })
 
 
 storeActions.actions() // returns array of all actions received by your store
