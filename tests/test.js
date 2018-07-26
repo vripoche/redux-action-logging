@@ -55,29 +55,18 @@ describe("Store Actions Middleware", () => {
     })
   })
 
+  describe("Has", () => {
+    describe("Optional Value Comparison", () => {
+      it("compares actions if passed an object", () => {
+        dispatch({ type: FOO, value: 5 })
 
-  describe("Optional Value Comparison", () => {
-    it("compares actions if passed an object", () => {
-      dispatch({ type: FOO, value: 5 })
+        expect(storeActions.has(
+          { type: FOO, value: 5 }
+        )).to.equal(true)
+      })
 
-      expect(storeActions.has(
-        { type: FOO, value: 5 }
-      )).to.equal(true)
-    })
-
-    it("deeply compares actions if passed an object", () => {
-      dispatch({ type: FOO, value: {
-        a: {
-          b: [{
-            c: {
-              d: 5
-            }
-          }]
-        }
-      }})
-
-      expect(storeActions.has(
-        { type: FOO, value: {
+      it("deeply compares actions if passed an object", () => {
+        dispatch({ type: FOO, value: {
           a: {
             b: [{
               c: {
@@ -85,28 +74,80 @@ describe("Store Actions Middleware", () => {
               }
             }]
           }
-        }
-      })).to.equal(true)
+        }})
+
+        expect(storeActions.has(
+          { type: FOO, value: {
+            a: {
+              b: [{
+                c: {
+                  d: 5
+                }
+              }]
+            }
+          }
+          })).to.equal(true)
+      })
+
+      it("can compare multiple object actions of the same type", () => {
+        dispatch({ type: FOO, value: 5 })
+        dispatch({ type: FOO, value: 10 })
+
+        expect(storeActions.has(
+          { type: FOO, value: 10 },
+          { type: FOO, value: 5 }
+        )).to.equal(true)
+      })
+
+      it("can mix and match action types and objects", () => {
+        dispatch({ type: FOO, value: 10 })
+        dispatch({ type: BAR })
+
+        expect(storeActions.has(
+          { type: FOO, value: 10 },
+          BAR
+        )).to.equal(true)
+      })
     })
+  })
 
-    it("can compare multiple object actions of the same type", () => {
-      dispatch({ type: FOO, value: 5 })
-      dispatch({ type: FOO, value: 10 })
+  describe('Matches', () => {
+    describe("Optional Value Comparison", () => {
+      it("compares actions if passed an object not strictly equal", () => {
+        dispatch({ type: FOO, value: 5, other: 10 })
 
-      expect(storeActions.has(
-        { type: FOO, value: 10 },
-        { type: FOO, value: 5 }
-      )).to.equal(true)
-    })
+        expect(storeActions.matches(
+          { type: FOO, value: 5 }
+        )).to.equal(true)
+      })
 
-    it("can mix and match action types and objects", () => {
-      dispatch({ type: FOO, value: 10 })
-      dispatch({ type: BAR })
+      it("compares actions if passed a non-matched object", () => {
+        dispatch({ type: FOO, value: 5, other: 10 })
 
-      expect(storeActions.has(
-        { type: FOO, value: 10 },
-        BAR
-      )).to.equal(true)
+        expect(storeActions.matches(
+          { type: FOO, value: 10 }
+        )).to.equal(false)
+      })
+
+      it("can compare multiple object actions of the same type", () => {
+        dispatch({ type: FOO, value: 5, other: 10})
+        dispatch({ type: FOO, value: 10, other: 5})
+
+        expect(storeActions.matches(
+          { type: FOO, value: 10 },
+          { type: FOO, value: 5 }
+        )).to.equal(true)
+      })
+
+      it("can mix and match action types and objects", () => {
+        dispatch({ type: FOO, value: 10, other: 5})
+        dispatch({ type: BAR })
+
+        expect(storeActions.matches(
+          { type: FOO, value: 10 },
+          BAR
+        )).to.equal(true)
+      })
     })
   })
 
